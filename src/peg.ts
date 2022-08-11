@@ -7,6 +7,7 @@ import {
   parseUnits,
 } from 'ethers/lib/utils';
 import { PEG_POOL_ABI } from './abis/peg-pool-abi';
+import { awaitTransactionComplete } from './utils';
 
 const PEG_POOL_ADDRESS = '';
 
@@ -30,64 +31,20 @@ export class PegPool {
   }
 
   async run() {
-    //  this.watchEvents();
+    try {
+      const avaxIndex = 0;
+      const walrusINdex = 1;
+      const tx = await this.pegPool.updateToken(avaxIndex, parseUnits(''));
+      await awaitTransactionComplete(tx);
 
-    // //  = 0, Ashare = 1
-    // const tokenIndex = 0;
-    // const perBlock: BigNumber = (await this.pegPool.rewardTokens(tokenIndex))
-    //   .rewardPerBlock;
-    // console.log(formatEther(perBlock));
-
-    const user = '0xfe499A8B3a53A6090f75d8F503117a6FEF0FcbAA';
-    const info = await this.pegPool.userInfo(user);
-    console.log(formatUnits(info, 6));
-
-    // const totalDeposits = await this.pegPool.totalDepositTokenAmount();
-    // console.log(formatUnits(totalDeposits, 6));
-
-    // const poolsAccum = await this.pegPool.poolAccForToken(
-    //   '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7',
-    // );
-    // console.log(poolsAccum);
-    // const acc2 = await this.pegPool.poolAccForToken(
-    //   '0xe6d1aFea0B76C8f51024683DD27FA446dDAF34B6',
-    // );
-    // console.log(formatEther(acc2));
-
-    const pending = await this.pegPool.pendingRewards(user);
-    console.log(pending[1]);
-    pending[1].forEach((r) => {
-      console.log(formatEther(r));
-    });
-
-    // const newPerDay = perBlock.mul(blocksPerDay).sub(parseEther('40'));
-    // console.log(formatEther(newPerDay));
-    // const newPerBlock = newPerDay.div(blocksPerDay);
-    // console.log(formatEther(newPerBlock));
-    // const tx = await this.pegPool.updateToken(tokenIndex, newPerBlock);
-    // await awaitTransactionComplete(tx);
-    // console.log(
-    //   formatEther((await this.pegPool.rewardTokens(tokenIndex)).rewardPerBlock),
-    // );
-
-    // const tx = await this.pegPool.pullStuckToken(
-    //   AMES_ADDRESS,
-    //   parseEther(''),
-    //   '',
-    // );
-    // await awaitTransactionComplete(tx);
-  }
-
-  watchEvents() {
-    console.log('Listening for events..');
-    this.pegPool.on('FarmHarvest', (amt) => {
-      console.log('FarmHarvest: ' + formatEther(amt));
-    });
-
-    this.pegPool.on('Withdraw', (who, amt) => {
-      console.log('User Withdraw event');
-      console.log(`
-      who: ${who}, amount: ${formatEther(amt)}`);
-    });
+      // const tx = await this.pegPool.rescueToken(
+      // '',
+      // parseEther(''),
+      // '',
+      // );
+      // await awaitTransactionComplete(tx);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
